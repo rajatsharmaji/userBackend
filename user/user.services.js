@@ -7,7 +7,7 @@ export const getUser = async (req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
-    const user = await User.findOne({ Email: email });
+    const user = await User.findOne({ email: email });
     if (!user) {
       res.send({ msg: "user does not exist" });
     } else {
@@ -27,22 +27,22 @@ export const addUser = async (req, res) => {
   try {
     const name = req.body.name;
     const email = req.body.email;
-    const password = await bcrypt.hash(req.body.password, 10);
+    const tempPassword = req.body.password;
+    const password = await bcrypt.hash(tempPassword, 10);
     const dob = req.body.dob;
-
-    const checkExist = User.findOne({ Email: email });
+    const checkExist = await User.findOne({ email: email });
     if (!checkExist) {
       const newUser = new User({
-        Name: name,
-        Email: email,
-        Password: password,
-        DOB: dob,
-        UUID: uniqueId(),
+        name: name,
+        email: email,
+        password: password,
+        dob: dob,
+        uuid: uniqueId(),
       });
       await newUser.save();
       res.send({ msg: "User Saved" });
     } else {
-      res.send("this email is already exist");
+      res.send({ msg: "this email is already exist" });
     }
   } catch (err) {
     console.error(err);

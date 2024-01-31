@@ -1,22 +1,20 @@
 import mongoose from "mongoose";
 
-const User = mongoose.Schema(
+const Page = mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
+      uniquie: true,
     },
-    email: {
+    content: {
       type: String,
       required: true,
-      unique: true,
+      minlength: 10,
+      maxlength: 500,
     },
-    password: {
+    userId: {
       type: String,
-      required: true,
-    },
-    dob: {
-      type: Date,
       required: true,
     },
     uuid: {
@@ -29,4 +27,4 @@ const User = mongoose.Schema(
   }
 );
 
-export default mongoose.model("User", User);
+export default mongoose.model("Page", Page);
