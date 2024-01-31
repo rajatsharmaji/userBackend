@@ -15,7 +15,7 @@ export const getUser = async (req, res) => {
       if (!bcrypt.compare(password, userPassword)) {
         res.send({ msg: "Incorrect password" });
       } else {
-        res.send("Login successfully");
+        res.send(user);
       }
     }
   } catch (err) {
