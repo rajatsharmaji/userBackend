@@ -17,22 +17,16 @@ export const getPage = async (req, res) => {
   try {
     const uuid = req.params.uuid;
     const redisKey = `page:${uuid}`;
-    const redisData = JSON.parse(await client.get(redisKey));
-    if (redisData) {
-      console.log("Data retrieved from Redis", redisData);
-      res.send(redisData);
+    const page = await Page.findOne({ uuid: uuid });
+    if (!page) {
+      res.send({ msg: "page does not exist" });
     } else {
-      const page = await Page.findOne({ uuid : uuid });
-      if (!page) {
-        res.send({ msg: "page does not exist" });
-      } else {
-        await client.set(redisKey, JSON.stringify(page));
-        client.expire(redisKey, 30);
-        res.send(page);
-      }
+      await client.set(redisKey, JSON.stringify(page));
+      client.expire(redisKey, 30);
+      res.send(page);
     }
-  } catch (err) {
-    console.error(err);
+  } catch (e) {
+    console.error(e);
   }
 };
 
@@ -51,7 +45,7 @@ export const addPage = async (req, res) => {
         uuid: uniqueId(),
       });
       await newPage.save();
-      const redisKey = `page:${name}`
+      const redisKey = `page:${name}`;
       await client.set(redisKey, JSON.stringify(newPage));
       client.expire(redisKey, 30);
       res.send(newPage);
@@ -63,38 +57,48 @@ export const addPage = async (req, res) => {
   }
 };
 
-export const deletePage = async (req,res) =>{
-    const name = req.body.name;
-    const checkExist = await Page.findOne({name:name});
-    if(!checkExist){
-        res.send({msg:"page does not exist"})
+export const deletePage = async (req, res) => {
+  console.log("req: ", req);
+  const uuid = req.params.uuid;
+  try {
+    const checkExist = await Page.findOne({ uuid: uuid });
+    if (!checkExist) {
+      res.send({ msg: "page does not exist" });
+    } else {
+      await Page.deleteOne({ uuid: uuid });
+      res.send({ msg: "page deleted" });
     }
-    else{
-       await Page.deleteOne({name:name})
-       res.send({msg:"page deleted"})
-    }
-}
+  } catch (err) {
+    console.error("error: ", err);
+  }
+};
 
-export const updatePage = async (req,res) => {
-    const name = req.body.name;
-    const content = {content:req.body.content};
-    const checkExist = await Page.findOne({name:name});
-    if(!checkExist){
-        res.send({msg:"page does not exist"})
+export const updatePage = async (req, res) => {
+  try {
+    const uuid = req.params.uuid;
+    const redisKey = `page:${uuid}`;
+    const content = { content: req.body.content };
+    const checkExist = await Page.findOne({ uuid: uuid });
+    if (!checkExist) {
+      res.send({ msg: "page does not exist" });
+    } else {
+      const updatedPage = await Page.findOneAndUpdate({ uuid: uuid }, content);
+      console.log("redisKey:", redisKey, "updatePage:", updatedPage);
+      await client.set(redisKey, JSON.stringify(updatedPage));
+      client.expire(redisKey, 30);
+      res.send(updatedPage);
     }
-    else{
-       const updatedPage = await Page.findOneAndUpdate({name:name}, content)
-       res.send(updatedPage)
-    }
-}
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-export const listOfPages = async (req,res) => {
-    try{
-        const userId = req.body.userId;
-        const allPages = await Page.find({userId:userId})
-        res.send(allPages)
-    }
-    catch(err){
-        console.error("error: ",err);
-    }
-}
+export const listOfPages = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const allPages = await Page.find({ userId: userId });
+    res.send(allPages);
+  } catch (err) {
+    console.error("error: ", err);
+  }
+};

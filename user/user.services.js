@@ -29,7 +29,7 @@ export const addUser = async (req, res) => {
     const tempPassword = req.body.password;
     const password = await bcrypt.hash(tempPassword, 10);
     const dob = req.body.dob;
-    const checkExist = await User.findOne({ email: email });
+    const checkExist = await User.findOne({ email: email })//.populate({password:-1})
     if (!checkExist) {
       const newUser = new User({
         name: name,
@@ -39,7 +39,8 @@ export const addUser = async (req, res) => {
         uuid: uniqueId(),
       });
       await newUser.save();
-      res.send(newUser);
+      delete newUser.password;
+      res.send(userRes);
     } else {
       res.send({ msg: "this email is already exist" });
     }

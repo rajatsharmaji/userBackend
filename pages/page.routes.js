@@ -1,12 +1,13 @@
 import express from "express";
 import { getPage, addPage, deletePage, updatePage, listOfPages } from "./page.services.js";
+import { redisUtil } from "../middleware/redis.util.js";
 
 const pageRoutes = express.Router();
 
-pageRoutes.get('/get:uuid', getPage);
-pageRoutes.post('/add', addPage);
-pageRoutes.delete('/delete', deletePage);
-pageRoutes.patch('/update',updatePage);
-pageRoutes.get('/list',listOfPages);
+pageRoutes.get('/:uuid', redisUtil, getPage);
+pageRoutes.post('/', addPage);
+pageRoutes.delete('/:uuid', deletePage);
+pageRoutes.patch('/:uuid',updatePage);
+pageRoutes.get('/',listOfPages);
 
 export default pageRoutes;
