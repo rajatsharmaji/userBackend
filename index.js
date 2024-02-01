@@ -1,10 +1,7 @@
 import express from "express";
-import dotenv from "dotenv";
 import conn from "./dbConnection.js";
 import userRoutes from "./user/user.routes.js";
 import pageRoutes from "./pages/page.routes.js";
-
-dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 

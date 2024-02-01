@@ -1,23 +1,12 @@
 import Page from "./page.model.js";
-import { createClient } from "redis";
+import { client } from "../redis.client.js";
 import { v4 as uniqueId } from "uuid";
-
-const client = createClient();
-
-client
-  .connect()
-  .then(() => {
-    console.log("Redis Connected");
-  })
-  .catch((e) => {
-    console.error(e);
-  });
 
 export const getPage = async (req, res) => {
   try {
     const uuid = req.params.uuid;
     const redisKey = `page:${uuid}`;
-    const page = await Page.findOne({ uuid: uuid })//.populate('uuid:-1');
+    const page = await Page.findOne({ uuid: uuid }).select({_id:0,__v:0});
     if (!page) {
       res.send({ msg: "page does not exist" });
     } else {

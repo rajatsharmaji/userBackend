@@ -1,6 +1,9 @@
 import User from "./user.model.js";
 import bcrypt from "bcrypt";
 import { v4 as uniqueId } from "uuid";
+import jwt from 'jsonwebtoken';
+
+const SECRET_KEY = process.env.SECRET_KEY;
 
 export const getUser = async (req, res) => {
   try {
@@ -10,11 +13,13 @@ export const getUser = async (req, res) => {
     if (!user) {
       res.send({ msg: "user does not exist" });
     } else {
-      const userPassword = await user.Password;
-      if (!bcrypt.compare(password, userPassword)) {
+      const userPassword = await user.password;
+      const checkPassword = await bcrypt.compare(password, userPassword);
+      if (!checkPassword) {
         res.send({ msg: "Incorrect password" });
       } else {
-        res.send(user);
+        const token = jwt.sign(user.uuid,SECRET_KEY)
+        res.send({user,token});
       }
     }
   } catch (err) {
