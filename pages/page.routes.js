@@ -3,10 +3,10 @@ import { getPage, addPage, deletePage, updatePage, listOfPages } from "./page.se
 
 const pageRoutes = express.Router();
 
-pageRoutes.get("/page", getPage);
-pageRoutes.post("/page", addPage);
-pageRoutes.delete("/page", deletePage);
-pageRoutes.patch("/page",updatePage)
-pageRoutes.get("",listOfPages)
+pageRoutes.get('/get:uuid', getPage);
+pageRoutes.post('/add', addPage);
+pageRoutes.delete('/delete', deletePage);
+pageRoutes.patch('/update',updatePage);
+pageRoutes.get('/list',listOfPages);
 
 export default pageRoutes;

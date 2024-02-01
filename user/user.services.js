@@ -1,5 +1,4 @@
 import User from "./user.model.js";
-import { createClient } from "redis";
 import bcrypt from "bcrypt";
 import { v4 as uniqueId } from "uuid";
 
@@ -40,7 +39,7 @@ export const addUser = async (req, res) => {
         uuid: uniqueId(),
       });
       await newUser.save();
-      res.send({ msg: "User Saved" });
+      res.send(newUser);
     } else {
       res.send({ msg: "this email is already exist" });
     }

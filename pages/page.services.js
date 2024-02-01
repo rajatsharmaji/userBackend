@@ -15,14 +15,14 @@ client
 
 export const getPage = async (req, res) => {
   try {
-    const name = req.body.name;
-    const redisKey = `page:${name}`;
+    const uuid = req.params.uuid;
+    const redisKey = `page:${uuid}`;
     const redisData = JSON.parse(await client.get(redisKey));
     if (redisData) {
       console.log("Data retrieved from Redis", redisData);
       res.send(redisData);
     } else {
-      const page = await Page.findOne({ name: name });
+      const page = await Page.findOne({ uuid : uuid });
       if (!page) {
         res.send({ msg: "page does not exist" });
       } else {
@@ -54,7 +54,7 @@ export const addPage = async (req, res) => {
       const redisKey = `page:${name}`
       await client.set(redisKey, JSON.stringify(newPage));
       client.expire(redisKey, 30);
-      res.send({ msg: "Page Saved" });
+      res.send(newPage);
     } else {
       res.send({ msg: "name already exists" });
     }

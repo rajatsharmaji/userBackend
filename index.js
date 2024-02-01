@@ -13,8 +13,8 @@ app.use(express.json());
 
 conn();
 
-app.use("/", userRoutes);
-app.use("/", pageRoutes);
+app.use("/user", userRoutes);
+app.use("/page", pageRoutes);
 
 app.listen(PORT, () => {
   console.log(`server is listening at PORT ${PORT}`);
