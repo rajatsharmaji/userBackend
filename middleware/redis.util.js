@@ -1,4 +1,4 @@
-import {client} from '../redis.client.js'
+import { client } from "../redis.client.js";
 
 export const redisUtil = async (req, res, next) => {
   const uuid = req.params.uuid;

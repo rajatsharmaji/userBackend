@@ -6,7 +6,7 @@ export const getPage = async (req, res) => {
   try {
     const uuid = req.params.uuid;
     const redisKey = `page:${uuid}`;
-    const page = await Page.findOne({ uuid: uuid }).select({_id:0,__v:0});
+    const page = await Page.findOne({ uuid: uuid }).select({ _id: 0, __v: 0 });
     if (!page) {
       res.send({ msg: "page does not exist" });
     } else {

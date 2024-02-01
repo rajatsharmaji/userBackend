@@ -1,7 +1,7 @@
 import User from "./user.model.js";
 import bcrypt from "bcrypt";
 import { v4 as uniqueId } from "uuid";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -18,8 +18,8 @@ export const getUser = async (req, res) => {
       if (!checkPassword) {
         res.send({ msg: "Incorrect password" });
       } else {
-        const token = jwt.sign(user.uuid,SECRET_KEY)
-        res.send({user,token});
+        const token = jwt.sign(user.uuid, SECRET_KEY);
+        res.send({ user, token });
       }
     }
   } catch (err) {
@@ -34,7 +34,7 @@ export const addUser = async (req, res) => {
     const tempPassword = req.body.password;
     const password = await bcrypt.hash(tempPassword, 10);
     const dob = req.body.dob;
-    const checkExist = await User.findOne({ email: email })//.populate({password:-1})
+    const checkExist = await User.findOne({ email: email }); //.populate({password:-1})
     if (!checkExist) {
       const newUser = new User({
         name: name,
