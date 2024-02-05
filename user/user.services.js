@@ -7,8 +7,8 @@ const SECRET_KEY = process.env.SECRET_KEY;
 
 export const getUser = async (req, res) => {
   try {
-    const email = req.body.email;
-    const password = req.body.password;
+    const email = req.query.email;
+    const password = req.query.password;
     const user = await User.findOne({ email: email });
     if (!user) {
       res.send({ msg: "user does not exist" });
@@ -35,6 +35,7 @@ export const addUser = async (req, res) => {
     const password = await bcrypt.hash(tempPassword, 10);
     const dob = req.body.dob;
     const checkExist = await User.findOne({ email: email }); //.populate({password:-1})
+
     if (!checkExist) {
       const newUser = new User({
         name: name,
@@ -44,8 +45,7 @@ export const addUser = async (req, res) => {
         uuid: uniqueId(),
       });
       await newUser.save();
-      delete newUser.password;
-      res.send(userRes);
+      res.send(newUser);
     } else {
       res.send({ msg: "this email is already exist" });
     }

@@ -11,7 +11,7 @@ import { verifyToken } from "../middleware/auth.js";
 
 const pageRoutes = express.Router();
 
-pageRoutes.get("/:uuid", redisUtil, getPage);
+pageRoutes.get("/:uuid", verifyToken, redisUtil, getPage);
 pageRoutes.post("/", addPage);
 pageRoutes.delete("/:uuid", deletePage);
 pageRoutes.patch("/:uuid", updatePage);
