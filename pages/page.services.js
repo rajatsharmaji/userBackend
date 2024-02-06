@@ -25,7 +25,7 @@ export const addPage = async (req, res) => {
     const content = req.body.content;
     const userId = req.body.userId;
 
-    const checkExist = await Page.findOne({ name: name });
+    const checkExist = await Page.findOne({ name: name, userId: userId });
     if (!checkExist) {
       const newPage = new Page({
         name: name,
